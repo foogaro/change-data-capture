@@ -1,0 +1,1 @@
+docker push foogaro/cdc-mssql-server:2017-latest

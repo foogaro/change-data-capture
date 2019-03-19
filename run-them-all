@@ -1,0 +1,12 @@
+docker stop cdc-kafka-connect cdc-infinispan cdc-kafka-server cdc-zookeeper cdc-mssql-server
+
+./mssql-server.run
+./zookeeper-3.4.13.run
+./kafka-server_2.12-2.1.1.run
+./infinispan-server-9.4.9.Final.run
+./kafka-connect_2.12-2.1.1.run
+
+sleep 5
+
+./kafka_2.12-2.1.1.topic-watch debezium.dbo.users
+

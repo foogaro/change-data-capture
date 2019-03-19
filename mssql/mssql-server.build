@@ -1,0 +1,1 @@
+docker build -t foogaro/cdc-mssql-server:2017-latest -f mssql-server.dockerfile .

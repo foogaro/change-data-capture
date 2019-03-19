@@ -1,0 +1,1 @@
+docker build -t foogaro/cdc-infinispan:9.4.9.Final -f infinispan-server-9.4.9.Final.dockerfile .

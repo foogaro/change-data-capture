@@ -1,0 +1,1 @@
+docker run -d --rm --name=cdc-mssql-server --net=cdc --volumes-from cdc-mssql-data  -p 1433:1433 -e SA_PASSWORD=_123@ABC_ -e ACCEPT_EULA=Y foogaro/cdc-mssql-server:2017-latest

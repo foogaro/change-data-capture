@@ -1,0 +1,1 @@
+docker build -t foogaro/cdc-debezium-mssql:0.9.2.Final -f debezium-mssql-0.9.2.Final.dockerfile .

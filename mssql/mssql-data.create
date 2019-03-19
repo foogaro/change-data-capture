@@ -1,0 +1,1 @@
+docker create -v /var/opt/mssql --name cdc-mssql-data foogaro/cdc-mssql-server:2017-latest

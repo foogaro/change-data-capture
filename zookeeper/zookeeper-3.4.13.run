@@ -1,0 +1,1 @@
+docker run -d --rm --name=cdc-zookeeper --net=cdc -p 2181:2181 foogaro/cdc-zookeeper:3.4.13

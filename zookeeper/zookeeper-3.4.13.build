@@ -1,0 +1,1 @@
+docker build -t foogaro/cdc-zookeeper:3.4.13 -f zookeeper-3.4.13.dockerfile .
