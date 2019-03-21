@@ -14,4 +14,5 @@ RUN ls -la /opt/rh/plugins
 RUN ls -la /opt/rh/plugins/infinispan-kafka-connector
 EXPOSE 8083
 ENTRYPOINT ["./bin/connect-standalone.sh"]
+#CMD ["config/connect-standalone.properties", "/opt/rh/plugins/InfinispanSinkConnector.properties", "/opt/rh/plugins/mssql-connector.properties", "-Dinfinispan.connection.cache.name=topicUsers"]
 CMD ["config/connect-standalone.properties", "/opt/rh/plugins/InfinispanSinkConnector.properties", "/opt/rh/plugins/mssql-connector.properties"]
