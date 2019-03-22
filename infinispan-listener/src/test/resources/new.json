@@ -1,0 +1,149 @@
+{
+  "schema": {
+    "type": "struct",
+    "fields": [
+      {
+        "type": "struct",
+        "fields": [
+          {
+            "type": "int32",
+            "optional": false,
+            "field": "user_id"
+          },
+          {
+            "type": "string",
+            "optional": false,
+            "field": "name"
+          },
+          {
+            "type": "string",
+            "optional": false,
+            "field": "lastname"
+          },
+          {
+            "type": "string",
+            "optional": false,
+            "field": "username"
+          },
+          {
+            "type": "string",
+            "optional": true,
+            "field": "email"
+          }
+        ],
+        "optional": true,
+        "name": "debezium.dbo.users.Value",
+        "field": "before"
+      },
+      {
+        "type": "struct",
+        "fields": [
+          {
+            "type": "int32",
+            "optional": false,
+            "field": "user_id"
+          },
+          {
+            "type": "string",
+            "optional": false,
+            "field": "name"
+          },
+          {
+            "type": "string",
+            "optional": false,
+            "field": "lastname"
+          },
+          {
+            "type": "string",
+            "optional": false,
+            "field": "username"
+          },
+          {
+            "type": "string",
+            "optional": true,
+            "field": "email"
+          }
+        ],
+        "optional": true,
+        "name": "debezium.dbo.users.Value",
+        "field": "after"
+      },
+      {
+        "type": "struct",
+        "fields": [
+          {
+            "type": "string",
+            "optional": true,
+            "field": "version"
+          },
+          {
+            "type": "string",
+            "optional": true,
+            "field": "connector"
+          },
+          {
+            "type": "string",
+            "optional": false,
+            "field": "name"
+          },
+          {
+            "type": "int64",
+            "optional": true,
+            "field": "ts_ms"
+          },
+          {
+            "type": "string",
+            "optional": true,
+            "field": "change_lsn"
+          },
+          {
+            "type": "string",
+            "optional": true,
+            "field": "commit_lsn"
+          },
+          {
+            "type": "boolean",
+            "optional": true,
+            "field": "snapshot"
+          }
+        ],
+        "optional": false,
+        "name": "io.debezium.connector.sqlserver.Source",
+        "field": "source"
+      },
+      {
+        "type": "string",
+        "optional": false,
+        "field": "op"
+      },
+      {
+        "type": "int64",
+        "optional": true,
+        "field": "ts_ms"
+      }
+    ],
+    "optional": false,
+    "name": "debezium.dbo.users.Envelope"
+  },
+  "payload": {
+    "before": null,
+    "after": {
+      "user_id": 1002,
+      "name": "Luigi",
+      "lastname": "Fugaro",
+      "username": "foogaro",
+      "email": "luigi@foogaro.com"
+    },
+    "source": {
+      "version": "0.9.2.Final",
+      "connector": "sqlserver",
+      "name": "debezium",
+      "ts_ms": 1553082773167,
+      "change_lsn": "00000024:00000878:0003",
+      "commit_lsn": "00000024:00000878:0004",
+      "snapshot": false
+    },
+    "op": "c",
+    "ts_ms": 1553082777877
+  }
+}
