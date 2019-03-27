@@ -3,9 +3,6 @@ package com.foogaro.cdc.infinispan;
 import com.foogaro.cdc.infinispan.model.Protable;
 import org.infinispan.Cache;
 
-import javax.annotation.ManagedBean;
-
-@ManagedBean
 public class Caronte {
 
     public void ship(Protable entry, Cache cache) {

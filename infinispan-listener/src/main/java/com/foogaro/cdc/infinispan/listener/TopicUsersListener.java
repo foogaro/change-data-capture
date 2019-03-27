@@ -1,10 +1,9 @@
 package com.foogaro.cdc.infinispan.listener;
 
 import com.foogaro.cdc.infinispan.Caronte;
-import com.foogaro.cdc.infinispan.factory.CacheType;
-import com.foogaro.cdc.infinispan.factory.QCache;
 import com.foogaro.cdc.infinispan.transformer.VDBUserTransformer;
 import org.infinispan.Cache;
+import org.infinispan.manager.EmbeddedCacheManager;
 import org.infinispan.notifications.Listener;
 import org.infinispan.notifications.cachelistener.annotation.CacheEntryCreated;
 import org.infinispan.notifications.cachelistener.annotation.CacheEntryModified;
@@ -12,31 +11,28 @@ import org.infinispan.notifications.cachelistener.event.CacheEntryCreatedEvent;
 import org.infinispan.notifications.cachelistener.event.CacheEntryModifiedEvent;
 import org.infinispan.notifications.cachelistener.event.Event;
 
-import javax.annotation.ManagedBean;
-import javax.inject.Inject;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@ManagedBean
 @Listener
 public class TopicUsersListener {
 
-    @Inject
+    public static final String VDB_USER_CACHE_NAME = System.getProperty("vdb.user.cache.name","vdbUsers");
+
     private Caronte caronte;
-
-    @Inject @QCache(CacheType.TOPIC_USER)
-    private Cache sourceCache;
-
-    @Inject @QCache(CacheType.VDB_USER)
     private Cache targetCache;
 
     protected ExecutorService executor = Executors.newSingleThreadExecutor();
+
+    public TopicUsersListener(EmbeddedCacheManager embeddedCacheManager) {
+        this.caronte = new Caronte();
+        this.targetCache = embeddedCacheManager.getCache(VDB_USER_CACHE_NAME);
+    }
 
     @CacheEntryModified
     @CacheEntryCreated
     public void processEntry(Event event) {
         System.out.printf("processEntry - Event %s%n", event);
-        System.out.println("processEntry - sourceCache: " + sourceCache);
         System.out.println("processEntry - targetCache: " + targetCache);
         System.out.println("processEntry - caronte: " + caronte);
         processEvent(event);
@@ -45,7 +41,6 @@ public class TopicUsersListener {
     public void transform(Event event) {
         System.out.printf("transform - ClientEvent %s%n", event);
         System.out.printf("transform - ClientEvent.getType %s%n", event.getType());
-        System.out.println("sourceCache: " + sourceCache);
         System.out.println("targetCache: " + targetCache);
         System.out.println("caronte: " + caronte);
         switch (event.getType()) {
@@ -62,11 +57,7 @@ public class TopicUsersListener {
     }
 
     protected void processEvent(final Event e) {
-        this.executor.submit(new Runnable() {
-            @Override public void run() {
-                transform(e);
-            }
-        });
+        this.executor.submit(() -> transform(e));
     }
 
 }

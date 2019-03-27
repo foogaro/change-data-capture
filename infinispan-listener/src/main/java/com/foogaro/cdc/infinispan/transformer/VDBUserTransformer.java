@@ -31,6 +31,7 @@ public class VDBUserTransformer {
             vdbUser.setLastname(after.get("lastname").asText());
             vdbUser.setUsername(after.get("username").asText());
             vdbUser.setEmail(after.get("email").asText());
+            System.out.println("VDBUser: " + vdbUser.toString());
             return vdbUser;
         } catch (IOException e) {
             e.printStackTrace();
