@@ -23,10 +23,16 @@ RUN rm -rf standalone/configuration/standalone_xml_history
 RUN ls -la standalone/configuration
 
 #Deploy the listener and hook it to the Infinispan module
-#COPY listener-*.jar infinispan-listener.jar
-#RUN ./bin/ispn-cli.sh --command="module add --name=com.foogaro.cdc.infinispan.listener --resources=infinispan-listener.jar --dependencies=org.infinispan"
+COPY listener-*.jar standalone/deployments/
+#COPY listener-*.jar .
+
+#RUN ./bin/ispn-cli.sh --command="module add --name=com.foogaro.cdc.infinispan.listener --resources=listener-*.jar --dependencies=org.infinispan"
+#RUN ./bin/ispn-cli.sh --command="module add --name=com.foogaro.cdc.infinispan.listener --resources=listener-0.0.1.jar"
 #RUN sed -i 's/<dependencies>/<dependencies><module name=\"com.foogaro.cdc.infinispan.listener\"\/>/g' modules/system/add-ons/ispn/org/infinispan/ispn-9.4/module.xml
+#RUN rm listener-*.jar
+#RUN ls -la 
 #RUN cat modules/system/add-ons/ispn/org/infinispan/ispn-9.4/module.xml
+#RUN ls -la modules/system/add-ons/ispn/org/infinispan/ispn-9.4/
 
 EXPOSE 8080 9990 11222
 ENTRYPOINT ["./bin/standalone.sh"]

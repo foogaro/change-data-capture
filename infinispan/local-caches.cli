@@ -3,3 +3,4 @@ batch
 /subsystem=datagrid-infinispan/cache-container=local/local-cache=topicUsers:add(configuration=topicUsersConfiguration)
 /subsystem=datagrid-infinispan/cache-container=local/local-cache=vdbUsers:add(configuration=vdbUsersConfiguration)
 run-batch
+/subsystem=datagrid-infinispan/cache-container=local/configurations=CONFIGURATIONS/local-cache-configuration=topicUsersConfiguration:write-attribute(name=start,value=LAZY)

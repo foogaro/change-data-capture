@@ -10,7 +10,7 @@ sleep 5
 sleep 5
 ./../kafka/kafka-connect_2.12-2.1.1.run
 
-sleep 15
+#sleep 15
 
-./../kafka/kafka_2.12-2.1.1.topic-watch debezium.dbo.users
+#./../kafka/kafka_2.12-2.1.1.topic-watch debezium.dbo.users
 
