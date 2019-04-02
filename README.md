@@ -61,8 +61,8 @@ So basically, this is the flow:
  
  Now, all this work is implemented for you as MVPoC.
  It would be real cool if can contribute fixing the following issues:
- * Fix the Infinispan custom cache-store and get rid of the ``` @ClientListener``` running as ``` while (true) {} ``` in a Java class.
- * Run it all on OpenShift;
+ * Fix the [issue#1](https://github.com/foogaro/change-data-capture/issues/1) for the Infinispan custom cache-store and get rid of the ``` @ClientListener``` running as ``` while (true) {} ``` in a Java class.
+ * Fix the [issue#2](https://github.com/foogaro/change-data-capture/issues/2) to run it all on OpenShift;
 
 # Running the all thing
 
