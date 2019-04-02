@@ -1,0 +1,1 @@
+mvn exec:java -Dexec.mainClass="com.foogaro.cdc.infinispan.InfinispanKafkaRunner" -Dexec.classpathScope="runtime" -f infinispan-listener/pom.xml
