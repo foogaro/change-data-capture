@@ -41,7 +41,7 @@ No better explanation than the one taken from its site:
 
 ## Java code
 You can find everything it this repo:
- - https://github.com/foogaro/change-data-capture/infinispan-teiid
+ - https://github.com/foogaro/change-data-capture/tree/master/infinispan-teiid
  
 # Architecture  
 
