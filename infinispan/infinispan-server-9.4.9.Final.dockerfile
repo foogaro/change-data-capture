@@ -23,8 +23,12 @@ RUN rm -rf standalone/configuration/standalone_xml_history
 RUN ls -la standalone/configuration
 
 #Deploy the listener and hook it to the Infinispan module
-COPY listener-*.jar standalone/deployments/
+#COPY listener-*.jar standalone/deployments/
 #COPY listener-*.jar .
+
+COPY model-0.0.1.jar .
+RUN ./bin/ispn-cli.sh --command="module add --name=com.foogaro.cdc.infinispan.model --resources=model-0.0.1.jar"
+
 
 #RUN ./bin/ispn-cli.sh --command="module add --name=com.foogaro.cdc.infinispan.listener --resources=listener-*.jar --dependencies=org.infinispan"
 #RUN ./bin/ispn-cli.sh --command="module add --name=com.foogaro.cdc.infinispan.listener --resources=listener-0.0.1.jar"

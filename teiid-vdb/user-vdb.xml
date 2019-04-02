@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<vdb name="UserVDB" version="1">
+		<!-- 
+			<property name ="lib" value ="com.foogaro.cdc.infinispan.model"></property>
+                        <property name ="lib" value ="deployment.model-0.0.1.jar"></property>
+		-->
+			<property name ="lib" value ="com.foogaro.cdc.infinispan.model"></property>
+    <!-- this vdb demonstrates configuring a pojo by defining its metadata using DDL.  The protobuf will be registered as  ispn.proto -->
+	    <!-- <model name="VDBUser" type="Physical"> -->
+		    <model name="VDBUser">
+				    <!--
+			    <property name="importer.ProtobufName" value="VDBUser.proto"/>
+				    <property name="importer.ProtoFilePath" value="/opt/rh/teiid-12.1.0/VDBUser.proto"/>
+				    -->
+				    <property name="importer.ProtoFilePath" value="/opt/rh/teiid-12.1.0/VDBUser.proto"/>
+        <source connection-jndi-name="java:/infinispanUser" name="infinispan" translator-name="infinispan-hotrod"/>
+		<!--
+	<metadata type="DDL"><![CDATA[
+
+                CREATE FOREIGN TABLE Utenti (userId varchar(100) PRIMARY KEY, name varchar(100), lastname varchar(100), username varchar (100), email varchar(255)) OPTIONS (NAMEINSOURCE 'vdbUsers', UPDATABLE true, "teiid_ispn:cache" 'vdbUsers');
+
+            ]]>
+		</metadata>
+	-->
+		<metadata type="NATIVE"/>
+		<metadata type = "DDL"><![CDATA[
+            ALTER FOREIGN TABLE VDBUser OPTIONS (SET "teiid_ispn:cache" 'vdbUsers');
+        ]]>
+		</metadata>
+    </model>
+
+</vdb>

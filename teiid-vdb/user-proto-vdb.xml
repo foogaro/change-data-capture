@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<vdb name="UserVDB" version="1">
+    <!-- this vdb demonstrates configuring a pojo by defining its metadata using DDL.  The protobuf will be registered as  ispn.proto -->
+    <model name="ProtoUsers" type="Physical">
+	    <property name="importer.useFullSchemaName" value="false"/>
+        <property name="importer.ProtobufName" value="VDBUser.proto"/>
+        <source connection-jndi-name="java:/infinispanUser" name="infinispan" translator-name="infinispan-hotrod"/>
+    </model>
+</vdb>

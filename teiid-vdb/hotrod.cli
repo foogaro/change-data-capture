@@ -1,0 +1,10 @@
+embed-server --admin-only=true --server-config=standalone-teiid.xml
+batch
+/subsystem=logging/logger=org.teiid:add(level=TRACE)
+/subsystem=resource-adapters/resource-adapter=ispnUser:add(module=org.jboss.teiid.resource-adapter.infinispan.hotrod)
+/subsystem=resource-adapters/resource-adapter=ispnUser/connection-definitions=infinispanUser:add(jndi-name="java:/infinispanUser", class-name=org.teiid.resource.adapter.infinispan.hotrod.InfinispanManagedConnectionFactory, enabled=true, use-java-context=true)
+#/subsystem=resource-adapters/resource-adapter=infinispan/connection-definitions=infinispanDS/config-properties=CacheTypeMap:add(value=vdbUsers:com.foogaro.cdc.infinispan.model.VDBUser;userId)
+#/subsystem=resource-adapters/resource-adapter=infinispan/connection-definitions=infinispanDS/config-properties=Module:add(value=com.foogaro.cdc.infinispan.model)
+/subsystem=resource-adapters/resource-adapter=ispnUser/connection-definitions=infinispanUser/config-properties=RemoteServerList:add(value="cdc-infinispan:11222")
+/subsystem=resource-adapters/resource-adapter=ispnUser:activate
+run-batch

@@ -2,9 +2,7 @@ embed-server --admin-only=true
 batch
 /subsystem=datagrid-infinispan/cache-container=local/configurations=CONFIGURATIONS/local-cache-configuration=topicUsersConfiguration:add(start=LAZY,statistics-available=true,statistics=true)
 /subsystem=datagrid-infinispan/cache-container=local/configurations=CONFIGURATIONS/local-cache-configuration=topicUsersConfiguration/transaction=TRANSACTION:add(mode=NONE)
-/subsystem=datagrid-infinispan/cache-container=local/configurations=CONFIGURATIONS/local-cache-configuration=topicUsersConfiguration/expiration=EXPIRATION:add(lifespan=200,max-idle=100)
-/subsystem=datagrid-infinispan/cache-container=local/configurations=CONFIGURATIONS/local-cache-configuration=topicUsersConfiguration/compatibility=true:add()
+/subsystem=datagrid-infinispan/cache-container=local/configurations=CONFIGURATIONS/local-cache-configuration=topicUsersConfiguration/expiration=EXPIRATION:add(lifespan=20000,max-idle=10000)
 /subsystem=datagrid-infinispan/cache-container=local/configurations=CONFIGURATIONS/local-cache-configuration=vdbUsersConfiguration:add(start=EAGER,statistics=true)
 /subsystem=datagrid-infinispan/cache-container=local/configurations=CONFIGURATIONS/local-cache-configuration=vdbUsersConfiguration/transaction=TRANSACTION:add(mode=NONE)
-/subsystem=datagrid-infinispan/cache-container=local/configurations=CONFIGURATIONS/local-cache-configuration=vdbUsersConfiguration/compatibility=true:add()
 run-batch

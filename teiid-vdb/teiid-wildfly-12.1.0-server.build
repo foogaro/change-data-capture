@@ -1,0 +1,1 @@
+docker build -t foogaro/cdc-teiid:12.1.0 -f teiid-wildfly-12.1.0-server.dockerfile .

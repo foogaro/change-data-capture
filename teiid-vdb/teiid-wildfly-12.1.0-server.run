@@ -1,0 +1,1 @@
+docker run -d --rm --name=cdc-teiid --net=cdc -p 18080:8080 -p 19990:9990 -p 18443:8443 -p 31000:31000 -p 35432:35432 foogaro/cdc-teiid:12.1.0
