@@ -1,0 +1,1 @@
+docker stop cdc-teiid cdc-kafka-connect cdc-infinispan cdc-kafka-server cdc-zookeeper cdc-mssql-server
