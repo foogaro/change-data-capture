@@ -50,18 +50,18 @@ There:
 ![Architecture](images/Data-Integration.png)
 
 So basically, this is the flow:
- * some external software add new records into the database;
- * the database stores the data and update its transaction log;
+ * some external software adds new records into the database;
+ * the database stores the data and updates its transaction log;
  * Debezium reads the transaction log and receives the changes from the databases (either insert, or update, or delete);
  * Debezium sends those changes as single event to a Kafka topic;
- * The infinispanSinkConnector receives those events from the topic, and it sends them to Infinispan;
- * A cache listener on Infinispan elaborates the new key and converts the message in a POJO;
+ * The [InfinispanSinkConnector](https://github.com/infinispan/infinispan-kafka) receives those events from the topic, and it sends them to Infinispan;
+ * A cache listener on Infinispan elaborates the new key and converts the message in a POJO (with ProtoBuf annotations);
  * Asynchronously... Teiid exposes the Infinispan caches providing support for JDBC, ODBC and OData4 protocols for client applications;
  * Applications can query and aggregate the data they need connecting directly to Teiid and proudly show their dashboards.
  
  Now, all this work is implemented for you as MVPoC.
  It would be really cool if you could contribute by fixing the following issues:
- * Fix the [issue#1](https://github.com/foogaro/change-data-capture/issues/1) for the Infinispan custom cache-store and get rid of the ``` @ClientListener``` running as ``` while (true) {} ``` in a Java class.
+ * Fix the [issue#1](https://github.com/foogaro/change-data-capture/issues/1) for the Infinispan custom cache-store and get rid of the ``` @ClientListener``` running as ``` while (true) {} ``` in a Java [class](https://github.com/foogaro/change-data-capture/blob/master/infinispan-teiid/infinispan-listener/src/test/java/com/foogaro/cdc/infinispan/InfinispanKafkaRunner.java).
  * Fix the [issue#2](https://github.com/foogaro/change-data-capture/issues/2) to run it all on OpenShift;
  * Fix the [issue#3](https://github.com/foogaro/change-data-capture/issues/3) to show cache metrics in Grafana.
 
