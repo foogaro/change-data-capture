@@ -73,6 +73,10 @@ As easy as
 ```
 
 
+# Demo
+You can find a _playback_ demo [here](https://github.com/infinispan/demo).
+The _playback_ demo can be download both as GIF or WEBM file.
+
 # Implementation Details
 Now I'm really tired.
 
