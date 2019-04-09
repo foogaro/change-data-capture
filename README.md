@@ -74,8 +74,10 @@ As easy as
 
 
 # Demo
-You can find a _playback_ demo [here](https://github.com/infinispan/demo).
+You can find a _playback_ demo [here](https://github.com/foogaro/change-data-capture/tree/master/demo).
+
 The _playback_ demo can be download both as GIF or WEBM file.
+
 
 # Implementation Details
 Now I'm really tired.
