@@ -1,0 +1,4 @@
+embed-server --admin-only=true
+batch
+deploy infinispan-listener-0.0.1.jar
+run-batch

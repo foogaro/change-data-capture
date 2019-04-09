@@ -1,0 +1,4 @@
+cp -a model/target/model-0.0.1.jar ../infinispan/
+cp -a model/target/model-0.0.1.jar ../kafka/infinispan-kafka-connector/
+cp -a model/target/model-0.0.1.jar ../teiid-vdb/
+cp -a infinispan-listener/target/infinispan-listener-0.0.1.jar ../infinispan/
