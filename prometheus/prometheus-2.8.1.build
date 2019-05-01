@@ -1,0 +1,1 @@
+docker build -t foogaro/cdc-prometheus:2.8.1 -f prometheus-2.8.1.dockerfile .

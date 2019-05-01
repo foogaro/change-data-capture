@@ -1,1 +1,1 @@
-docker run -d --rm --name=cdc-infinispan --net=cdc -p 8080:8080 -p 9990:9990 -p 11222:11222 foogaro/cdc-infinispan:9.4.9.Final
+docker run -d --rm --name=cdc-infinispan --net=cdc -p 8080:8080 -p 8088:8088 -p 9990:9990 -p 11222:11222 foogaro/cdc-infinispan:9.4.9.Final

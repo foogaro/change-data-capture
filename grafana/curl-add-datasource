@@ -1,0 +1,1 @@
+curl -s -u admin:admin -X POST http://localhost:3000/api/datasources --data-binary @./datasource.json -H "Content-Type: application/json"

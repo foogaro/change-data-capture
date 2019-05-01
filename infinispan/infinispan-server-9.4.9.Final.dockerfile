@@ -46,6 +46,29 @@ RUN rm model-*.jar
 #RUN cat modules/system/add-ons/ispn/org/infinispan/ispn-9.4/module.xml
 #RUN ls -la modules/system/add-ons/ispn/org/infinispan/ispn-9.4/
 
-EXPOSE 8080 9990 11222
+RUN curl -O http://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.11.0/jmx_prometheus_javaagent-0.11.0.jar
+COPY jmx_prometheus.yml .
+#COPY prometheus.conf .
+ENV JBOSS_HOME=/opt/rh/infinispan-server-9.4.9.Final
+ENV JBOSS_MODULES_SYSTEM_PKGS="org.jboss.byteman,org.jboss.logmanager"
+ENV PROMETHEUS_JAR=jmx_prometheus_javaagent-0.11.0.jar
+ENV PROMETHEUS_YML=jmx_prometheus.yml
+ENV JBOSS_LOG_MANAGER_LIB=$JBOSS_HOME/modules/system/layers/base/org/jboss/logmanager/main/jboss-logmanager-2.1.4.Final.jar
+ENV WILDFLY_COMMON_LIB=$JBOSS_HOME/modules/system/layers/base/org/wildfly/common/main/wildfly-common-1.4.0.Final.jar
+
+ENV JAVA_OPTS="$JAVA_OPTS -Xbootclasspath/p:$JBOSS_LOG_MANAGER_LIB"
+ENV JAVA_OPTS="$JAVA_OPTS -Xbootclasspath/p:$WILDFLY_COMMON_LIB"
+ENV JAVA_OPTS="$JAVA_OPTS -Djboss.modules.system.pkgs=org.jboss.byteman,org.jboss.logmanager"
+ENV JAVA_OPTS="$JAVA_OPTS -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
+ENV JAVA_OPTS="$JAVA_OPTS -javaagent:$PROMETHEUS_JAR=8088:$PROMETHEUS_YML"
+
+#ENV JAVA_OPTS="$JAVA_OPTS -Dsun.util.logging.disableCallerCheck=true"
+#ENV JAVA_OPTS="$JAVA_OPTS -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
+#java.util.logging.manager=org.jboss.logmanager.LogManager"
+#ENV JAVA_OPTS="$JAVA_OPTS -Xbootclasspath/p:$WILDFLY_COMMON_LIB"
+#ENV JAVA_OPTS="$JAVA_OPTS -Xbootclasspath/p:$JBOSS_LOG_MANAGER_LIB"
+#ENV JAVA_OPTS="$JAVA_OPTS -javaagent:$PROMETHEUS_JAR=8088:$PROMETHEUS_YML"
+
+EXPOSE 8080 8088 9990 11222
 ENTRYPOINT ["./bin/standalone.sh"]
 CMD ["-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]

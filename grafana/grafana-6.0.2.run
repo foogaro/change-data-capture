@@ -1,0 +1,1 @@
+docker run -d --rm --name=cdc-grafana --net=cdc -p 3000:3000 foogaro/cdc-grafana:6.0.2

@@ -1,0 +1,1 @@
+docker build -t foogaro/cdc-grafana:6.0.2 -f grafana-6.0.2.dockerfile .

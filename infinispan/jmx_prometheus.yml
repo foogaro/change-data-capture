@@ -1,0 +1,73 @@
+---
+lowercaseOutputName: true
+lowercaseOutputLabelNames: true
+whitelistObjectNames: 
+ # Whitelist objects to be collected, for performance reason
+ # see https://github.com/prometheus/jmx_exporter/issues/246#issuecomment-367573931
+ # Each object in the rules below has to be added to whitelistObjectNames too !
+ # note that rules use regex (like "foo.*", whereas the whitelist use globbing expressions (like "foo*")
+ # - "jboss.as:subsystem=messaging-activemq,server=*"
+ - "jboss.as:subsystem=datasources,data-source=*,statistics=*"
+ - "jboss.as:subsystem=datasources,xa-data-source=*,statistics=*"
+ - "jboss.as:subsystem=transactions*"
+ - "jboss.datagrid-infinispan:type=Cache,name=*,manager=*,component=Statistics"
+ - "jboss.datagrid-infinispan:type=Cache,name=*,manager=*,component=Cache"
+ - "jboss.datagrid-infinispan:type=Cache,name=*,manager=*,component=ClusterCacheStats"
+ - "jboss.datagrid-infinispan:type=Cache,name=*,manager=*,component=StateTransferManager"
+
+ # - "jboss.as:subsystem=undertow,server=*,http-listener=*"
+ # - "java.lang:*"
+rules:
+  - pattern: "^jboss.as<subsystem=datasources, (?:xa-)*data-source=(.+), statistics=(.+)><>(.+):"
+    attrNameSnakeCase: true
+    name: wildfly_datasource_$2_$3
+    labels:
+      name: $1
+
+  - pattern: "^jboss.as<subsystem=transactions><>number_of_(.+):"
+    attrNameSnakeCase: true
+    name: wildfly_transaction_$1
+
+  - pattern: "^jboss.datagrid-infinispan<type=Cache, name=\"(.+)\\(.+\\)\", manager=\"(.+)\", component=Statistics><>(.+):"
+    attrNameSnakeCase: true
+    name: datagrid_cache_stats
+    labels:
+      name: $1
+      container: $2
+      attribute: $3
+    help: JMX MBean Statistics
+
+  - pattern: "^jboss.datagrid-infinispan<type=Cache, name=\"(.+)\\(.+\\)\", manager=\"(.+)\", component=Cache><>(.+):"
+    attrNameSnakeCase: true
+    name: datagrid_cache
+    labels:
+      name: $1
+      container: $2
+      attribute: $3
+    help: JMX MBean Cache
+
+  - pattern: "^jboss.datagrid-infinispan<type=Cache, name=\"(.+)\\(.+\\)\", manager=\"(.+)\", component=ClusterCacheStats><>(.+):"
+    attrNameSnakeCase: true
+    name: datagrid_cluster_cache_stats
+    labels:
+      name: $1
+      container: $2
+      attribute: $3
+    help: JMX MBean ClusterCacheStats
+
+  - pattern: "^jboss.datagrid-infinispan<type=Cache, name=\"(.+)\\(.+\\)\", manager=\"(.+)\", component=StateTransferManager><>(.+):"
+    attrNameSnakeCase: true
+    name: datagrid_state_transfer_manager
+    labels:
+      name: $1
+      container: $2
+      attribute: $3
+    help: JMX MBean StateTransferManager
+
+  # - pattern: "^jboss.as<subsystem=undertow, server=(.+), http-listener=(.+)><>(bytes_.+|error_count|processing_time|request_count):"
+  #   attrNameSnakeCase: true
+  #   name: wildfly_undertow_$3
+  #   labels:
+  #     server: $1
+  #     http_listener: $2
+

@@ -1,0 +1,1 @@
+docker push foogaro/cdc-grafana:6.0.2
