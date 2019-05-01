@@ -73,7 +73,7 @@ As easy as
 ```
 
 
-# Running the all thing
+# Grafana dashboard
 
 Here it is the Grafana dashbaord to monitor the Infinispan caches:
 
