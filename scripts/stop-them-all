@@ -1,1 +1,1 @@
-docker stop cdc-teiid cdc-kafka-connect cdc-infinispan cdc-kafka-server cdc-zookeeper cdc-mssql-server
+docker stop cdc-prometheus cdc-grafana cdc-teiid cdc-kafka-connect cdc-infinispan cdc-kafka-server cdc-zookeeper cdc-mssql-server

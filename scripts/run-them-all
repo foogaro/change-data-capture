@@ -11,6 +11,10 @@ sleep 5
 ./../kafka/kafka-connect_2.12-2.1.1.run
 sleep 5
 ./../teiid-vdb/teiid-wildfly-12.1.0-server.run
+sleep 5
+./../prometheus/prometheus-2.8.1.run
+sleep 5
+./../grafana/grafana-6.0.2.run
 
 #sleep 15
 
