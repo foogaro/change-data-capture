@@ -73,6 +73,13 @@ As easy as
 ```
 
 
+# Running the all thing
+
+Here it is the Grafana dashbaord to monitor the Infinispan caches:
+
+![Grafana](images/grafana-monitoring.png)
+
+
 # Demo
 You can find a _playback_ demo [here](https://github.com/foogaro/change-data-capture/tree/master/demo).
 
