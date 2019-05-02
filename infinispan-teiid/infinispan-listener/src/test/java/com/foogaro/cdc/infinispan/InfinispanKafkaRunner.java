@@ -73,11 +73,12 @@ public class InfinispanKafkaRunner {
         metadataCache.put(filename, memoSchemaFile);
 
         String filesWithErrors = metadataCache.get(ERRORS_KEY_SUFFIX);
-        if (filesWithErrors != null)
-            throw new AssertionError("Error in proto file(s): " + filesWithErrors);
-        else
+        if (filesWithErrors != null) {
+            System.err.println("Error in proto file(s): " + filesWithErrors);
+            //throw new AssertionError("Error in proto file(s): " + filesWithErrors);
+        } else {
             System.out.println("Added schema file: " + filename);
-
+        }
 
         /*
         // Register entity marshallers on the client side ProtoStreamMarshaller instance associated with the remote cache manager.
