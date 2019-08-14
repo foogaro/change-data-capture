@@ -4,7 +4,9 @@
 
 Nowadays, with the increase of competition, companies and organizations need to be as updated as possible, and react to market trends as quickly as possible.
 React to changes has always been a trade off in IT between performance, and  systems coupling and dependencies.
+
 In databases, change data capture (CDC) is a set of software design patterns used to determine (and track) the data that has changed so that action can be taken using the changed data.
+
 Methods:
 * LAST_UPDATED
 * diff
@@ -12,6 +14,7 @@ Methods:
 * Transaction log
 
 Since decades, reacting to changes occured on databases introduced a lot of legacy SQL code, for the joys of the vendors. Most of the code was specific per database platform.
+
 Today, however, IT evolved, new platforms came out with different approaches, paradigme and patterns.
 Now, an event/change in a database can be captured and notified to other systems in real time as a message. Such capability is the real enabler for many use cases, such as:
 * Replicate data/database
@@ -25,7 +28,7 @@ Now, an event/change in a database can be captured and notified to other systems
 
 Every event that happens in a datastore can be captured and notified to other systems.
 
-Opensource technologies like Debezium, Apache Kafka and Infinispan can play together to deliver a Change DAta Capture Architecture that enables the above mentioned use cases.
+Opensource technologies like Debezium, Apache Kafka and Infinispan can play together to deliver a Change Data Capture Architecture that enables the above mentioned use cases.
 
 ##  The Architecture
 The architecture proposed is the following:
@@ -65,9 +68,9 @@ Debezium reads the transaction log (remote connection), captures the changes and
 Apache Kafka receive the new changes and stores them into its brokers (topic, partition). At this point any Apache Kafka consumer can receive the notification of the change occurred into the database. Any consumer can receive the changes occured into the database since the beginning, since the last time it was connected, only the last change occurred for such record (identified by its primary key).
 
 This solution proposes Infinispan as the external system which receives the notification.
-Infinispan, as quickly mentioned above, is an in-memory database which has great performance and extremely scalable. For this reasons is the best candidate to host all the data changes. With its key/value data structure can be queried by any HTTP cabable application, and thanks to its distexec mechanism can return data in milliseconds.
+Infinispan, as quickly mentioned above, is an in-memory database which has great performance and extremely scalable. For this reasons is the best candidate to host all the data changes. With its key/value data structure can be queried by any HTTP cabable applications, and thanks to its distexec mechanism can return data in milliseconds.
 
-The architecture provides an additional layer, Teiid, which can be considered optional as it add a SQL relational view of the Infinispan data, and can expose those data using different protocols, such as HTTP, SOAP, OData (v2 and v4), JDBC, and ODBC.
+The architecture provides an additional layer, Teiid, which can be considered optional as it adds a SQL relational view of the Infinispan data, and can expose those data using different protocols, such as HTTP, SOAP, OData (v2 and v4), JDBC, and ODBC.
 
 
 ## Demo
