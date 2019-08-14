@@ -76,5 +76,5 @@ Here is a little demo setup using containers for Microsoft SQL Server, Apache Zo
 
 ![Demo](images/demo.gif)
 
-Or download the WEB Movie form [here](https://github.com/foogaro/change-data-capture/blob/master/images/demo.webm).
+Or download the WEB Movie form [here](https://github.com/foogaro/change-data-capture/raw/master/images/demo.webm).
 
