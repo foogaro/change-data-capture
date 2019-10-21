@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 @Path("products")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class ProductsResource {
+public class Loader {
 
     @Inject
     private Logger logger;

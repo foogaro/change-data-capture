@@ -1,8 +1,9 @@
-create database debezium;
-use debezium;
-CREATE TABLE debezium.dbo.users (
- user_id INT IDENTITY (1, 1) PRIMARY KEY,
- name VARCHAR (255) NOT NULL,
+create database foogaro;
+use foogaro;
+CREATE TABLE products (
+ productId INT IDENTITY (1, 1) PRIMARY KEY,
+ code VARCHAR (255) NOT NULL,
+ description VARCHAR (255) NOT NULL,
  lastname VARCHAR (255) NOT NULL,
  username VARCHAR (255) NOT NULL,
  email VARCHAR (255)

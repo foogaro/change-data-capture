@@ -1,90 +1,80 @@
 package com.foogaro.boundary;
 
-import org.jakartaeeprojects.coffee.orders.control.OrderInMemory;
-import org.jakartaeeprojects.coffee.orders.control.OrderNotificationService;
-import org.jakartaeeprojects.coffee.orders.control.OrderRepository;
-import org.jakartaeeprojects.coffee.orders.entity.CoffeeOrder;
-import org.jakartaeeprojects.coffee.orders.entity.CoffeeRequest;
+import com.foogaro.entity.Product;
+import com.foogaro.entity.Status;
 
-import javax.annotation.Resource;
-import javax.enterprise.concurrent.ManagedExecutorService;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.NotificationOptions;
 import javax.inject.Inject;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.validation.Valid;
+import javax.persistence.EntityManager;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-import java.net.URI;
-import java.util.Collection;
+import javax.ws.rs.core.*;
 import java.util.Optional;
-import java.util.concurrent.CompletionStage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Path("orders")
+@Path("products")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class OrdersResource {
+public class ProductsResource {
 
     @Inject
     private Logger logger;
     @Inject
-    private Event<CoffeeOrder> coffeeOrderEvent;
-    @Resource
-    private ManagedExecutorService managedExecutorService;
-    @Inject
-    private OrderNotificationService notificationService;
+    private EntityManager em;
 
-    @Inject
-    @OrderInMemory
-    private OrderRepository orderRepository;
+    @POST
+    public Response create(Product product, @Context UriInfo uriInfo) {
+        try {
+            em.persist(product);
+            UriBuilder builder = uriInfo.getAbsolutePathBuilder();
+            builder.path(Long.toString(product.getId()));
+            return Response.created(builder.build()).build();
+        } catch (Throwable t) {
+            return Response.serverError().build();
+        }
+    }
 
     @GET
-    public Response getOrders() {
-        Collection<CoffeeOrder> orders = this.orderRepository.getAll();
-        return Response.ok(orders).build();
+    public Response read() {
+        Product product = em.find(Product.class, null);
+        return Response.ok(product).build();
+    }
+
+    @PATCH
+    @PUT
+    public Response update(Product product, @Context UriInfo uriInfo) {
+        Product current = (Product)getById(product.getId()).getEntity();
+        em.getTransaction().begin();
+        current.setCode(product.getCode());
+        current.setDescription(product.getDescription());
+        current.setInstock(product.getInstock());
+        current.setStatus(product.getStatus());
+        current.setPrice(product.getPrice());
+        current.setCheckin(product.getCheckin());
+        em.getTransaction().commit();
+        return Response.ok(current).build();
+    }
+
+    @DELETE
+    @Path("{id}")
+    public Response delete(@PathParam("id") Long id) {
+        Product product = (Product)getById(id).getEntity();
+        em.getTransaction().begin();
+        product.setStatus(Status.DELETED);
+        em.getTransaction().commit();
+        return Response.ok().build();
     }
 
     @GET
     @Path("{id}")
-    public Response getOrder(@PathParam("id") Long id) {
-        logger.log(Level.INFO, "Looking for order {0}", id);
+    public Response getById(@PathParam("id") Long id) {
+        logger.log(Level.INFO, "Looking for product {0}", id);
 
-        Optional<CoffeeOrder> targetOrder = this.orderRepository.getById(id);
-
-        if (!targetOrder.isPresent()) {
-            throw new NotFoundException("Missing order " + id);
+        Optional<Product> product = Optional.ofNullable(em.find(Product.class, id));
+        if (product.isPresent()) {
+            return Response.ok(product.get()).build();
         }
 
-        return Response.ok(targetOrder.get()).build();
-    }
-
-    @POST
-    public Response newOrder(@Valid CoffeeRequest request,
-                             @Context UriInfo uriInfo) {
-        final CoffeeOrder order = orderRepository.create(request);
-        logger.log(Level.INFO, "Processing order {0}", order.getId());
-
-        CompletionStage<CoffeeOrder> orderCompletionStage = coffeeOrderEvent.fireAsync(order,
-                NotificationOptions.ofExecutor(managedExecutorService));
-        orderCompletionStage.thenAccept(notificationService::notifyOrderStatus);
-
-        JsonObject orderJson = Json.createObjectBuilder()
-                .add("order", order.getId())
-                .build();
-
-        URI orderUri = uriInfo.getAbsolutePathBuilder()
-                .path(order.getId().toString())
-                .build();
-
-        return Response.accepted(orderJson)
-                .location(orderUri)
-                .build();
+        return Response.noContent().build();
     }
 
 }
