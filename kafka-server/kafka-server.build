@@ -1,0 +1,4 @@
+IMAGE=foogaro/cdc-kafka-server
+VERSION=2.12-2.3.0
+docker build -t ${IMAGE}:${VERSION} .
+docker tag ${IMAGE}:${VERSION} ${IMAGE}:latest

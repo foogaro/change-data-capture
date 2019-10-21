@@ -1,0 +1,286 @@
+
+= Teiid Spring Boot User Guide
+:toc: manual
+:toc-placement: preamble
+
+This is document shows how to use `teiid-spring-boot-starter` run Teiid with your Spring Application.
+
+== What is Teiid Spring Boot?
+Teiid Spring Boot is a framework for developing Spring applications, that are looking to utilize Data Virtualization features. Data Virtualization technology provides seamless integration with multiple hetrogenious data sources. For example, you can combine data from Oracle database with data from Microsoft SQL Server, REST Service, Flat File etc. You not only integrate the data, you can also create your own Views of that integrated data. The Data Virtualization technology is based on link:http://teiid.org[Teiid]
+
+Teiid Spring Boot is a new bootstapping mechanism of Teiid that is developed in keeping up with developers and their usage of Annotations with Spring application at its core. If you are familiar with using the JPA or JDBC template model in a Spring application, then most of learning is already done.
+
+== How is Teiid Spring Boot different from Teiid?
+If you are familiar with Teiid or Teiid Embedded, all the functionality you are after in using Teiid is still there. However they are provided and utilized differently in Teiid Spring Boot.
+
+* In the regular Teiid development, Teiid is always accessed as a external database. You connect to it using a JDBC connection, or layer a JPA on top of the JDBC connection. In Teiid Spring Boot, it is more a framework/library to join the data. Teiid engine is bootstrapped as implicit embedded database, on your application start, which user doesn't really need to know about.
+
+* There is NO VDB. You read it correct! OK, we lied there is no user facing VDB. In the regular Teiid development one needs to use tooling like Teiid Designer or use DDL based files and build Virtual Database (VDB), then deploy that into a server environment and data sources need to be configured before you can use virtual views in your application. With Teiid Spring Boot, there is no need to use the any tooling, your application layer and View definition layer become one. The virtual View construction happens with Annotations in your Java code. It is exactly same steps as to defining Entity using JPA framework with couple extra annotations that are specific to Teiid.
+
+* Teiid Spring Boot is not really designed if you are looking for running third party BI tools like Tableau, Business Objects etc to some business reports. This is designed specifically for its usage with Microservices and Spring based Java applications.
+
+* Since this is Spring Boot, this only supports Java language.
+
+== Your First Example, Join Data From Two Postgres Databases
+
+This guide walks you through the process of building an application that uses Teiid Spring Boot and JPA to store and retrieve data from two relational databases as a *single* call
+
+=== What you’ll build
+
+You’ll build an application that combines the data from two separate tables from two separate Postgres databases. For simplicity, this example assumes both databases identical and both have identical schema as follows.
+
+[source,sql]
+----
+CREATE TABLE customer (
+    id bigint NOT NULL PRIMARY KEY,
+    name character varying(25),
+    ssn character varying(25)
+);
+----
+
+However, your data inside these tables can be different. 
+
+=== What you’ll need
+
+* About 15 minutes
+* A favorite text editor or IDE
+* JDK 1.8 or later
+* Maven 3.0+
+
+=== Build With Maven
+First you set up a basic build script. You can use any build system you like when building apps with Spring, but the code you need to work with Maven is included here. If you’re not familiar with Maven, refer to link:https://spring.io/guides/gs/maven[Building Java Projects with Maven].
+
+Go to link:http://start.spring.io/[Spring Initializer] and type in "JPA" in dependencies and generate a project. Then open the generated code in your favorite IDE, and edit the pom.xml to add the below dependencies.
+
+Otherwise, in a project directory of your choosing, create the following sub-directory structure; for example, with
+----
+mkdir -p src/main/java/example on *nix systems:
+----
+and create pom.xml file of your choosing and add following maven dependencies
+
+
+[source,xml]
+.*spring-boot-starter-data-jpa*
+----
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+----
+
+[source,xml]
+.*teiid-spring-boot-starter*
+----
+<dependency>
+   <groupId>org.teiid</groupId>
+   <artifactId>teiid-spring-boot-starter</artifactId>
+   <version>{{ book.versionNumber }}</version>
+</dependency>
+----
+
+Since we are going to connect Postgres database, add the JDBC driver dependency. You can replace this with database driver of your choosing.
+
+[source,xml]
+.*postgresql*
+----
+<dependency>
+    <groupId>org.postgresql</groupId>
+    <artifactId>postgresql</artifactId>
+     <version>42.2.1</version>
+    <scope>runtime</scope>
+</dependency>
+----
+
+=== Define the Data Sources
+In this example, first we need to define all the data sources that in play. To capture data source configuration information, create the following Java class. This pattern is prescribed in Spring Boot when working more than single database. Please note the annotation `@ConfigurationProperties` defines the properties prefix as well identifier for datasource. 
+
+[source,java]
+.*src/main/java/org/example/DataSources.java*
+----
+package org.example;
+
+@Configuration
+public class DataSources {
+    @ConfigurationProperties(prefix = "spring.datasource.accountsDS")
+    @Bean
+    public DataSource accountsDS() {
+        return DataSourceBuilder.create().build();
+    }
+    @ConfigurationProperties(prefix = "spring.datasource.customerDS")
+    @Bean
+    public DataSource customerDS() {
+        return DataSourceBuilder.create().build();
+    }
+}
+----
+
+NOTE: Keep the data source property name and method name exactly SAME. From above example "accountsDS" in property and accountsDS() method, keep the names same, as additional properties will not be discovered otherwise.
+
+We are creating two(2) data source connections, with names "accountDS" and "customerDS". Now we need to provide the corresponding configuration for these data sources. In "application.properties" file, define *your* configuration similar to
+
+[source,text]
+.*src/main/resources/application.properties*
+----
+spring.datasource.accountsDS.url=jdbc:postgresql://localhost/test
+spring.datasource.accountsDS.username=<username>
+spring.datasource.accountsDS.password=<password>
+spring.datasource.accountsDS.driver-class-name=org.postgresql.Driver
+
+# these Teiid specific source import properties
+spring.datasource.accountsDS.importer.SchemaPattern=public
+
+spring.datasource.customerDS.url=jdbc:postgresql://localhost/customer
+spring.datasource.customerDS.username=<username>
+spring.datasource.customerDS.password=<password>
+spring.datasource.customerDS.driver-class-name=org.postgresql.Driver
+
+# these Teiid specific source import properties
+spring.datasource.customerDS.importer.SchemaPattern=public
+----
+
+Change the property values above to fit your database environment. The property with "importer.SchemaPattern" post fix defines that database schema that you would like to access tables from. There lot more properties to restrict/allow what schema objects you want to work with. Check Teiid documentation for JDBC Translator "import" properties.
+
+=== Define View/Entity Class
+Now it is time to define the main Entity or View class. We have the Customer table in both the databases that we need to union as one. For that, create Entity like below
+
+[source,java]
+.src/main/java/com/example/Customer.java
+----
+package org.teiid.spring.example;
+
+@Entity
+@Table(name="all_customers")
+@SelectQuery("SELECT id, name, ssn FROM accountsDS.Customer "
+                +"UNION ALL "
+                +"SELECT id, name, ssn FROM customerDS.Customer")
+public class Customer {
+    @Id
+    long id;
+    @Column
+    String name;
+    @Column
+    String ssn;
+
+    public Customer() {}
+    public Customer(int id, String name, String ssn) {
+        this.id = id;
+        this.name = name;
+        this.ssn= ssn;
+    }
+    @Override
+    public String toString() {
+        return "Customer [id=" + id + ", name=" + name + ", ssn=" + ssn + "]";
+    }
+}
+----
+Here you have a Customer class with three attributes, the id, the Name, and the SSN. You also have two constructors. The default constructor only exists for the sake of JPA. You won’t use it directly. The other constructor is the one you’ll use to create instances of Customer to be used from the database.
+
+NOTE: In this guide, the typical getters and setters and import statements have been left out for brevity.
+
+The Customer class is annotated with `@Entity`, indicating that it is a JPA entity. For `@Table` annotation, is optional, but to give a different unioned name in Teiid you can define it. Sometimes @Table also need to be used to avoid the naming conflicts.
+
+The Customer’s id property is annotated with `@Id` so that JPA will recognize it as the object’s identity. The id property.
+
+The other two properties, name and ssn are left with out any annotation. It is assumed that they’ll be mapped to columns that share the same name as the properties themselves.
+
+*@SelectQuery* annotation is where most of the magic of Teiid occurring. This defines a query that joins that tables from two separate data sources. This can be any ANSI compatible SQL query, make sure the entities at data source level are fully qualified. For ex: `accountsDS.Customer`, where `accountDS` represents the data source name you created in `Datasource.java` class.
+
+At application boot time, Teiid Spring Boot scans the application's packages for these annotations and builds the respective metadata required to create a virtual database internally and deploys to a internal server. To do this annotaion scan, define the application package name in `application.properties` file as below.
+
+[source,text]
+.*src/main/resources/application.properties*
+----
+spring.teiid.model.package=org.example
+----
+
+In absence of this property entire classpath is scanned, that could take significant time depending upon all the libraries in your application.
+
+For more available annotations, refer to Reference Guide.
+
+The convenient toString() method will print out the customer’s properties.
+
+=== Create simple queries
+
+Spring Data JPA focuses on using JPA to store data in a relational database. Its most compelling feature is the ability to create repository implementations automatically, at runtime, from a repository interface.
+
+To see how this works, create a repository interface that works with Customer entities:
+
+[source,java]
+.src/main/java/org/example/CustomerRepository.java
+----
+package org.example;
+
+public interface CustomerRepository extends CrudRepository<Customer, Long> {
+}
+----
+
+CustomerRepository extends the CrudRepository interface. The type of entity and ID that it works with, Customer and Long, are specified in the generic parameters on CrudRepository. By extending CrudRepository, CustomerRepository inherits several methods for working with Customer persistence, including methods for saving, deleting, and finding Customer entities.
+
+Spring Data JPA also allows you to define other query methods by simply declaring their method signature. In a typical Java application, you’d expect to write a class that implements CustomerRepository. But that’s what makes Spring Data JPA so powerful: You don’t have to write an implementation of the repository interface. Spring Data JPA creates an implementation on the fly when you run the application.
+
+Let’s wire this up and see what it looks like!
+
+=== Create an Application class
+
+Here you create an Application class with all the components.
+
+[source,java]
+.src/main/java/org/example/Application.java
+----
+package org.example;
+
+@SpringBootApplication
+public class Application implements CommandLineRunner {
+    @Autowired
+    private CustomerRepository customerRepository;    
+    
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args).close();
+    }
+    @Override
+    public void run(String... args) throws Exception {
+        System.out.println("\n\nFrom All customers entity");
+        customerRepository.findAll().forEach(x->System.out.println(x));
+    }
+}
+----
+
+Now when you execute this application, you should see results like below, which are combined results from both of your Postges database tables. 
+
+----
+Customer [id=1, name=christian, ssn=999-99-9999]
+Customer [id=2, name=john, ssn=888-88-8888]
+Customer [id=1, name=claire, ssn=777-77-7777]
+Customer [id=100, name=foo, ssn=12312312]
+----
+
+If you need to do insert/update/delete with above example you would need to define additional annotations for them. See
+@InsertQuery, @UpdateQuery and @DeleteQuery. If you need to read data from a JSON based payload, see @JsonTable annotation. Using similar techniques you combine data from *any* data source. Currently we have rdbms, file, web-service, excel support but all the data sources that are supported by Teiid will be supported in this framework very soon. If you want to contribute please let us know.
+
+
+== Available Examples
+There are many more examples, that show different capabilities of Data Virtualization technology
+
+|===
+|*Name* |*Features Demonstrated* |*Description* |*Prerequisites*
+
+|link:../samples/rdbms/Readme.md[Database]
+|Data Federation
+|Shows how to expose multiple data sources for data federation
+|None
+
+|link:../samples/json/Readme.adoc[JSON]
+|@JsonTable
+|Shows how to convert JSON data from a file or REST endpoint into Entity
+|None
+
+|link:../samples/rdbms-file/Readme.adoc[DB and File]
+|Database and CSV based Table using @TextTable
+|Shows how to convert CSV data into a Entity and combine with a Entity from relational database.
+|None
+
+|link:../samples/odata/Readme.adoc[OData Access]
+|OData
+|Shows how to enable a OData REST interface on top of any Entity model defined using Teiid
+|None
+|===

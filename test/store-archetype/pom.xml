@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.infinispan.archetypes</groupId>
+   <artifactId>store-archetype</artifactId>
+   <version>1.0-SNAPSHOT</version>
+   <packaging>pom</packaging>
+   <name>Custom Cache Store</name>
+   <description>Archetype project for building custom cache stores for use within Infinispan</description>
+
+   <properties>
+      <!--
+         Which Infinispan version do you want to use?  Released versions are always more reliable than snapshots!
+      -->
+      <version.infinispan>9.0.1.Final</version.infinispan>
+      <version.metainf>1.7</version.metainf>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+   </properties>
+
+   <dependencies>
+      <dependency>
+         <groupId>org.kohsuke.metainf-services</groupId>
+         <artifactId>metainf-services</artifactId>
+         <version>${version.metainf}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-embedded</artifactId>
+         <version>${version.infinispan}</version>
+      </dependency>
+   </dependencies>
+
+   <build>
+      <plugins>
+         <!-- enforce java 1.8 and maven 3 -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <version>1.2</version>
+            <executions>
+               <execution>
+                  <id>enforce-java</id>
+                  <goals>
+                     <goal>enforce</goal>
+                  </goals>
+                  <configuration>
+                     <rules>
+                        <requireJavaVersion>
+                           <version>[1.8,)</version>
+                        </requireJavaVersion>
+                        <requireMavenVersion>
+                           <version>[3.0.0,)</version>
+                        </requireMavenVersion>
+                     </rules>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+
+         <!-- by default, compile to JDK 1.8 compatibility -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.3</version>
+            <configuration>
+               <source>1.8</source>
+               <target>1.8</target>
+               <encoding>UTF-8</encoding>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+
+   <repositories>
+      <repository>
+         <id>JBoss.org Public Repository</id>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+         <snapshots>
+            <enabled>true</enabled>
+         </snapshots>
+         <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+      </repository>
+   </repositories>
+  <modules>
+    <module>cache-loader</module>
+    <module>cache-writer</module>
+    <module>advanced-cache-loader</module>
+    <module>advanced-cache-writer</module>
+    <module>advanced-load-write-store</module>
+    <module>external-store</module>
+  </modules>
+</project>

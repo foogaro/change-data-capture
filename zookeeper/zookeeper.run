@@ -1,0 +1,1 @@
+docker run -d --rm --name=cdc-zookeeper -p 2181:2181 foogaro/cdc-zookeeper

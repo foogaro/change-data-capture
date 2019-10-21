@@ -1,0 +1,1 @@
+docker build -t foogaro/cdc-kafka:2.12-2.1.1 -f kafka_2.12-2.1.1.dockerfile .

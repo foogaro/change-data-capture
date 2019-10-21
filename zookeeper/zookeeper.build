@@ -1,0 +1,4 @@
+IMAGE=foogaro/cdc-zookeeper
+VERSION=3.5.5
+docker build -t ${IMAGE}:${VERSION} .
+docker tag ${IMAGE}:${VERSION} ${IMAGE}:latest

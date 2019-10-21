@@ -1,0 +1,1 @@
+docker run -d --rm --name=cdc-kafka-connect --net=cdc --link cdc-zookeeper:cdc-zookeeper --link cdc-kafka-server:cdc-kafka-server --link cdc-mssql-server:cdc-mssql-server -p 8083:8083 foogaro/cdc-kafka-connect:2.12-2.1.1

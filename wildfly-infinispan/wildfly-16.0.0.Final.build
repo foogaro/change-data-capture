@@ -1,0 +1,1 @@
+docker build -t foogaro/cdc-infinispan:wf16 -f wildfly-16.0.0.Final.dockerfile .

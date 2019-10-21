@@ -1,0 +1,4 @@
+IMAGE=foogaro/fedora-openjdk
+VERSION=30_1.8.0_222-b10
+docker build -t ${IMAGE}:${VERSION} .
+docker tag ${IMAGE}:${VERSION} ${IMAGE}:latest

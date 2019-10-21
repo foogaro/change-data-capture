@@ -1,0 +1,1 @@
+docker push foogaro/cdc-kafka-server:2.12-2.1.1
