@@ -1,0 +1,73 @@
+version: "3"
+services:
+  zookeeper-1:
+    build: ./zookeeper
+    image: foogaro/cdc-zookeeper:latest
+    ports:
+      - "12181:12181"
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 12181
+      ZOOKEEPER_ADMIN_SERVER_PORT: 18080
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: zookeeper-1:12888:13888;zookeeper-2:22888:23888;zookeeper-3:32888:33888
+    network_mode: "host" 
+    volumes:
+      - ./zookeeper-1/data:/data
+      - ./zookeeper-1/datalog:/datalog
+
+  zookeeper-2:
+    build: ./zookeeper
+    image: foogaro/cdc-zookeeper:latest
+    ports:
+      - "22181:22181"
+    environment:
+      ZOOKEEPER_SERVER_ID: 2
+      ZOOKEEPER_CLIENT_PORT: 22181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: zookeeper-1:12888:13888;zookeeper-2:22888:23888;zookeeper-3:32888:33888
+    network_mode: "host" 
+    volumes:
+      - ./zookeeper-2/data:/data
+      - ./zookeeper-2/datalog:/datalog
+
+  zookeeper-3:
+    build: ./zookeeper
+    image: foogaro/cdc-zookeeper:latest
+    ports:
+      - "32181:32181"
+    environment:
+      ZOOKEEPER_SERVER_ID: 3
+      ZOOKEEPER_CLIENT_PORT: 32181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: zookeeper-1:12888:13888;zookeeper-2:22888:23888;zookeeper-3:32888:33888
+    network_mode: "host" 
+    volumes:
+      - ./zookeeper-3/data:/data
+      - ./zookeeper-3/datalog:/datalog
+
+  kafka-server-1:
+    build: ./kafka-server
+    depends_on:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
+    image: foogaro/cdc-kafka-server:latest
+    ports:
+      - "19092:19092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:12181,zookeeper-2:22181,zookeeper-3:32181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-server-1:19092
+      KAFKA_LOG4J_LOGGERS: "kafka.controller=DEBUG,kafka.producer.async.DefaultEventHandler=DEBUG,state.change.logger=DEBUG"
+    network_mode: "host" 
+    volumes:
+      - ./kafka-server-1/data:/var/lib/kafka/data
+
+
