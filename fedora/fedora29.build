@@ -1,1 +1,0 @@
-docker build -t foogaro/fedora29-openjdk1.8.0.201.b098 -f fedora29.dockerfile .

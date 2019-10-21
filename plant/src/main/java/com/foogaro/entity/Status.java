@@ -1,4 +1,6 @@
 package com.foogaro.entity;
 
-public class Status {
+public enum Status {
+    PLACED, ACCEPTED, READY, CANCELLED, DELETED, AVAILABLE, NOT_AVAILABLE;
+
 }
