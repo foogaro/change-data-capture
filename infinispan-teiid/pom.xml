@@ -13,7 +13,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <kafka.version>2.1.1</kafka.version>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
         <infinispan.version>9.4.7.Final</infinispan.version>
         <infinispan.protostream.version>4.2.2.Final</infinispan.protostream.version>
         <jackson.version>2.9.10.7</jackson.version>
