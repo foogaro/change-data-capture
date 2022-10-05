@@ -16,7 +16,7 @@
         <junit.version>4.13.1</junit.version>
         <infinispan.version>9.4.7.Final</infinispan.version>
         <infinispan.protostream.version>4.2.2.Final</infinispan.protostream.version>
-        <jackson.version>2.9.10.8</jackson.version>
+        <jackson.version>2.12.6.1</jackson.version>
         <log4j2.version>2.17.0</log4j2.version>
         <prometheus.version>0.6.0</prometheus.version>
 
